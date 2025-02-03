@@ -1,7 +1,15 @@
 Rails.application.routes.draw do
   devise_for :users
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
-  # Defines the root path route ("/")
-  # root "articles#index"
+  root "bookings#index"
+
+  resources :bookings, only: [:create, :show] do
+    member do
+      post :extend                  # POST /bookings/:id/extend
+      get  :tickets                 # GET /bookings/:id/tickets
+      get  :consolidated_ticket     # GET /bookings/:id/consolidated_ticket
+    end
+  end
+
+  resources :tickets, only: [:create, :show]
 end
