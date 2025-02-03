@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe BookingExtension, type: :model do
-  let(:booking) { create(:booking) }
+  let(:parent_booking) { create(:booking) }
   
-  subject { build(:booking_extension, booking: booking, start_date: Date.today, end_date: Date.today + 3) }
+  subject { build(:booking_extension, booking: parent_booking, start_date: Date.today, end_date: Date.today + 3) }
 
   describe "associations" do
     it { should belong_to(:booking) }
@@ -25,7 +25,9 @@ RSpec.describe BookingExtension, type: :model do
 
   describe "callbacks" do
     it "calculates total_price before saving" do
-      # Given the daily_rate is hardcoded to 50 and rental_days = 3, we expect 150.
+      # Given that the model calculates total_price as 50 * rental_days,
+      # for start_date = Date.today and end_date = Date.today + 3,
+      # we expect total_price to be 50 * 3.
       subject.start_date = Date.today
       subject.end_date = Date.today + 3
       subject.save!
