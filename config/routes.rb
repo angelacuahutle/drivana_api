@@ -3,7 +3,7 @@ Rails.application.routes.draw do
 
   root "bookings#index"
 
-  resources :bookings, only: [:create, :show] do
+  resources :bookings, only: [:create, :show, :index] do
     member do
       post :extend                  # POST /bookings/:id/extend
       get  :tickets                 # GET /bookings/:id/tickets
