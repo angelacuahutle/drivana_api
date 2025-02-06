@@ -18,3 +18,6 @@ ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../Gemfile', __dir__)
 
 # Comment out Bootsnap for now
 # require 'bootsnap/setup' # Speed up boot time by caching expensive operations.
+
+require 'bundler/setup' # Set up gems listed in the Gemfile.
+# ... rest of the file ...
