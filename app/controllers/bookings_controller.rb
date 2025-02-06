@@ -1,13 +1,16 @@
 class BookingsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_booking, only: [:show, :extend, :tickets, :consolidated_ticket]
+  before_action :set_booking, only: [:show, :extend_form, :extend, :tickets, :consolidated_ticket]
 
   def index
     @bookings = Booking.all
     render json: @bookings
   end
 
-  # POST /bookings
+  def show
+    render json: @booking, include: [:booking_extensions, :tickets]
+  end
+
   def create
     @booking = Booking.new(booking_params)
     if @booking.save
@@ -18,23 +21,20 @@ class BookingsController < ApplicationController
     end
   end
 
-  # POST /bookings/:id/extend
+  def extend_form
+  end
+
   def extend
     @extension = @booking.booking_extensions.new(extension_params)
     if @extension.save
       TicketGenerator.generate_for(@extension)
+      redirect_to booking_path(@booking), notice: "Booking extendido correctamente."
       render json: @extension, status: :created
     else
       render json: { errors: @extension.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
-  # GET /bookings/:id
-  def show
-    render json: @booking, include: [:booking_extensions, :tickets]
-  end
-
-  # GET /bookings/:id/tickets
   def tickets
     booking_tickets = @booking.tickets
     extension_tickets = @booking.booking_extensions.includes(:tickets).map(&:tickets).flatten
@@ -42,7 +42,6 @@ class BookingsController < ApplicationController
     render json: all_tickets
   end
 
-  # GET /bookings/:id/consolidated_ticket
   def consolidated_ticket
     consolidated = TicketGenerator.generate_consolidated(@booking)
     render json: consolidated
@@ -58,10 +57,6 @@ class BookingsController < ApplicationController
 
   def booking_params
     params.require(:booking).permit(:car_id, :driver_id, :start_date, :end_date, :status)
-  end
-
-  def parameter_missing(exception)
-    render json: { error: exception.message }, status: :bad_request
   end
 
   def extension_params

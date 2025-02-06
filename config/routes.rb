@@ -1,15 +1,16 @@
 Rails.application.routes.draw do
-  devise_for :users
-
+  devise_for :users, controllers: { sessions: 'users/sessions' }
+  
   root "bookings#index"
-
+  
   resources :bookings, only: [:create, :show, :index] do
     member do
-      post :extend                  # POST /bookings/:id/extend
-      get  :tickets                 # GET /bookings/:id/tickets
-      get  :consolidated_ticket     # GET /bookings/:id/consolidated_ticket
+      get  :extend_form          # Ruta GET para mostrar el formulario de extensión
+      post :extend               # Ruta POST para procesar el formulario y crear la extensión
+      get  :tickets
+      get  :consolidated_ticket
     end
   end
-
-  resources :tickets, only: [:create, :show]
+  
+  resources :tickets, only: [:index, :create, :show]
 end
