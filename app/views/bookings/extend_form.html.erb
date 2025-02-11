@@ -1,0 +1,16 @@
+<h1>Extender Booking</h1>
+
+<%= form_with model: @booking.booking_extensions.build, url: extend_booking_path(@booking), method: :post, local: true do |f| %>
+  <div>
+    <%= f.label :start_date, "Fecha de inicio de la extensión" %>
+    <%= f.date_field :start_date %>
+  </div>
+  <div>
+    <%= f.label :end_date, "Fecha de fin de la extensión" %>
+    <%= f.date_field :end_date %>
+  </div>
+  <div>
+    <%= f.submit "Extender Booking" %>
+  </div>
+<% end %>
+
